@@ -1,0 +1,16 @@
+<?php require_once 'template/head.php' ?>
+
+<h1 class="text-center">Welcome on out web interface</h1>
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        <div class="box">
+            <ul class="list-group">
+                <li class="list-group-item"><a href="users.php">Register or Sign In</a></li>
+                <li class="list-group-item"><a href="request.php">Write a query</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<?php require_once 'template/script.php' ?>
+<?php require_once 'template/foot.php' ?>

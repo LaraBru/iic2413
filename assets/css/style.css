@@ -1,0 +1,30 @@
+* {
+  font-family: 'Open Sans', sans-serif; }
+
+body {
+  background: #F3F3F3; }
+
+.container {
+  margin-top: 30px; }
+
+input {
+  text-align: center; }
+
+.box {
+  padding: 20px 20px 20px;
+  background: white;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 0 3px #a6a6a6;
+  background: white;
+  margin-top: 30px; }
+  .box th {
+    text-align: center; }
+  .box ul li {
+    width: 50%;
+    margin: auto; }
+  .box form input, .box form textarea {
+    margin-bottom: 20px;
+    margin-top: 20px; }
+
+/*# sourceMappingURL=style.css.map */

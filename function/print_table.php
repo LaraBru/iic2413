@@ -6,10 +6,12 @@ function print_table($array)
     {
         echo '<table class="table table-striped table-hover table-bordered">';
         for ($i = 0; $i < count($array); $i++) { 
-            if ($i == 0) {
+            if (count($array) != 0 && $i == 0) {
                 echo '<tr>';
                 foreach ($array[$i] as $key => $value) {
-                    echo '<th>' . $key . '</th>';
+                    if ($key != "") {
+                        echo '<th>' . $key . '</th>';
+                    }
                 }
                 echo '</tr>';
             }

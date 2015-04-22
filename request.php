@@ -11,23 +11,37 @@
         } 
         catch (PDOException $e) 
         {
-            print "Error!: " . $e->getMessage() . "<br/>";
+            $rows = array(
+                "Error!: " => $e->getMessage()
+            );
             die();
         }
         try
         {
             $stmt = $db->prepare($_POST['query']);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->execute())
+            {
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            else
+            {
+                $rows = array(array(
+                    "Error : " => "Your request failed"
+                ));
+            }
         }
         catch (Exception $e)
         {
-            $rows = null;            
+            $rows = array(array(
+                "Error : " => "Your request failed - " . $e->getMessage()
+            ));
         }
     }
     else
     {
-        $rows = null;
+        $rows = array(array(
+            "" => "No request launched"
+        ));
     }
 ?>
 <?php require_once 'template/head.php' ?>
@@ -37,7 +51,7 @@
         <h1 class="text-center">Page to test queries</h1>
         <div class="box">
             <form action="request.php" method="POST">
-                <h3>Enter a query bellow</h3>
+                <h3>Enter a query below</h3>
                 <p>You can use ctrl + enter or cmd + enter to try your query</p>
                 <textarea id="queryarea" name="query" class="form-control" cols="10" rows="3"></textarea>
                 <button class="btn btn-primary" type="submit">Launch Query</button>

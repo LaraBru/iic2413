@@ -9,3 +9,6 @@
 </head>
 <body>
 <div class="container">
+    <div class="text-center">
+        <a class="text-center" href="index.php">Home</a>
+    </div>

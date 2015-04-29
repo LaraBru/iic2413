@@ -20,13 +20,19 @@ input {
   text-align: center;
   box-shadow: 0 0 3px #a6a6a6;
   background: white;
+  margin: auto;
   margin-top: 30px; }
   .box th {
     text-align: center; }
+  .box ul.nav {
+    margin-top: 20px; }
   .box ul li {
-    width: 50%;
-    margin: auto; }
-  .box form input, .box form textarea {
+    width: 50%; }
+    .box ul li.list-group-item {
+      margin: auto; }
+    .box ul li a {
+      outline: 0; }
+  .box form input, .box form textarea, .box form select {
     margin-bottom: 20px;
     margin-top: 20px; }
 

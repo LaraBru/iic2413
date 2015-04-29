@@ -39,19 +39,31 @@ input {
 .box {
     @include box-element;
     background: white; 
+    margin: auto;
     margin-top: 30px;
 
     th {
       text-align: center;
     }
 
+    ul.nav {
+      margin-top: 20px;
+    }
+
     ul li {
         width: 50%;
-        margin: auto;
+
+        &.list-group-item {
+          margin: auto;
+        }
+
+        a {
+          outline: 0;
+        }
     }
 
     form {
-        input, textarea {
+        input, textarea, select {
             margin-bottom: 20px;
             margin-top: 20px;
         }

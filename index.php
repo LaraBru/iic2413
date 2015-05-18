@@ -19,9 +19,7 @@ require_once 'template/head.php'
 
             <h3>Queries</h3>
             <ul class="list-group">
-                <li class="list-group-item"><a href="#">Alert</a></li>
-                <li class="list-group-item"><a href="#">Event</a></li>
-                <li class="list-group-item"><a href="#">Cities</a></li>
+                <li class="list-group-item"><a href="query_list.php">List of queries for the third homework</a></li>
             </ul>
         </div>
     </div>

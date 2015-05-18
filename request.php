@@ -1,5 +1,5 @@
 <?php 
-    require_once 'classes/database/Db.class.php';
+    require_once 'classes/Db.class.php';
     
     require_once 'function/print_table.php';
     require_once 'function/launch_query.php';
@@ -24,7 +24,7 @@
             <div class="query_result">
                 <h3>Results</h3>
 <?php 
-    print_table($rows);
+    echo print_table($rows);
 
     if (isset($_POST['query']))
     {

@@ -1,0 +1,173 @@
+
+CREATE TABLE Country (id_country serial PRIMARY KEY, name varchar(255));
+
+CREATE TABLE Person (username varchar(255) PRIMARY KEY, name varchar(255), password varchar(255), email varchar(255), afiliacion varchar(255), id_country int REFERENCES Country);
+
+CREATE TABLE Type (id_type serial PRIMARY KEY, name varchar(255));
+
+CREATE TABLE Event (id_event serial PRIMARY KEY, beginning DATE, ending DATE, username varchar(255) REFERENCES Person, id_type int REFERENCES Type);
+
+CREATE TABLE Hurricane (id_hurricane serial PRIMARY KEY, grade int, id_event int REFERENCES Event);
+
+CREATE TABLE Earthquake (id_earthquake serial PRIMARY KEY,mercalli int, richter int, id_event int REFERENCES Event);
+
+CREATE TABLE Alert (id_alert serial PRIMARY KEY, beginning date, ending date, username varchar(255) REFERENCES Person);
+
+CREATE TABLE City (id_city serial PRIMARY KEY, name varchar(255), id_country int REFERENCES Country);
+
+CREATE TABLE Alert_City (id_alert int REFERENCES Alert, id_city int REFERENCES City, PRIMARY KEY (id_alert, id_city));
+
+CREATE TABLE Event_City (id_event int REFERENCES Event, id_city int REFERENCES City, PRIMARY KEY (id_event, id_city));
+
+CREATE TABLE Alert_Event (id_alert int REFERENCES Alert, id_event int REFERENCES Event, PRIMARY KEY (id_event, id_alert));
+
+
+---------------------------- CONSULTAS ---------------------
+
+
+Muestrar las alertas activas OK
+
+SELECT * FROM Alert WHERE ending IS NULL;
+
+-------------
+
+Dado una ciudad "city", muestro todo los eventos en esa ciudad en los ultimos 10 anos 
+??Date??
+
+
+SELECT * FROM Event INNER JOIN Event_City 
+ON Event.id_event = Event_City.id_event
+INNER JOIN City
+ON Event_City.id_City = City.id_City
+WHERE AGE (Event.beginning) < INTERVAL '10 years'
+AND City.id_city = "id";
+
+
+
+----------------------
+
+Dado un evento n (n es el id del evento), indique si ese evento estuvo o no advertido por una alerta 
+
+
+SELECT id_event, id_alert FROM Alert_Event
+WHERE id_event = n;
+
+
+----------------
+
+Dado un usario user, muestre todos los eventos y alertas que ha publicado ese usario :
+
+
+SELECT * FROM Event WHERE username = "user";
+
+SELECT * FROM Alert WHERE username = "user";
+
+
+
+%%% Problema si un evento y la alerta associada estan declarados por personas differentas :
+SELECT id_event, id_alert FROM Event FULL JOIN Alert_Event
+ON Event.id_event = Alert_Event.id_event
+FULL JOIN Alert
+ON Alert_Event.id_alert = Alert.id_alert
+WHERE Event.username = user
+AND Alert.username = user;
+
+
+
+
+--------------------
+
+
+Muestre la cuidad con mas huracanes en los ultimos 10 anos : OK
+??DATE??
+
+SELECT id_city FROM (
+	SELECT id_city, COUNT(*) AS number
+	FROM Event INNER JOIN Event_City
+	ON Event.id_event = Event_City.id_event
+	INNER JOIN Type
+	ON Event.id_type = Type.id_type
+	WHERE type.name = 'Hurricane'
+	AND AGE (Event.beginning) < INTERVAL '10 years'
+	GROUP BY id_city ) 
+AS City_Hurricane
+WHERE City_Hurricane.number = (SELECT MAX(number) FROM (
+	SELECT id_city, COUNT(*) AS number
+	FROM Event INNER JOIN Event_City
+	ON Event.id_event = Event_City.id_event
+	INNER JOIN Type
+	ON Event.id_type = Type.id_type
+	WHERE type.name = 'Hurricane'
+	AND AGE (Event.beginning) < INTERVAL '10 years'
+	GROUP BY id_city ) 
+AS City_Hurricane);
+
+
+
+--------------------
+
+Muestre la ciudad que mas alertas genera que no terminan en un evento : OK
+
+
+SELECT id_city FROM (
+	SELECT id_city, COUNT(*) AS number
+	FROM Alert INNER JOIN Alert_City
+	ON Alert.id_alert = Alert_City.id_alert
+	WHERE Alert.id_alert NOT IN (SELECT id_alert FROM Alert_Event)
+	GROUP BY id_city)
+AS City_FalseAlert
+WHERE City_FalseAlert.number = (SELECT MAX(number) FROM (
+	SELECT id_city, COUNT(*) AS number
+	FROM Alert INNER JOIN Alert_City
+	ON Alert.id_alert = Alert_City.id_alert
+	WHERE Alert.id_alert NOT IN (SELECT id_alert FROM Alert_Event)
+	GROUP BY id_city)
+AS City_FalseAlert);
+
+
+--------------------
+
+Muestre el minimo, promedio y mediana de la intensidad de terremotos este ano : PB AVEC LE TYPE INT
+
+
+SELECT MIN(richter) FROM Earthquake
+INNER JOIN Event
+ON Event.id_event = Earthquake.id_event
+WHERE AGE(Event.beginning) < INTERVAL '1 year';
+
+
+
+SELECT MAX(richter) FROM Earthquake
+INNER JOIN Event
+ON Event.id_event = Earthquake.id_event
+WHERE AGE(Event.beginning) < INTERVAL '1 year';
+
+
+
+SELECT AVG(richter) FROM Earthquake
+INNER JOIN Event
+ON Event.id_event = Earthquake.id_event
+WHERE AGE(Event.beginning) < INTERVAL '1 year';
+
+
+
+
+SELECT richter as median FROM Earthquake
+INNER JOIN Event
+ON Event.id_event = Earthquake.id_event
+WHERE AGE(Event.beginning) < INTERVAL '1 year'
+ORDER BY richter
+LIMIT 1 OFFSET ((SELECT COUNT(*) FROM Earthquake) /2 );
+
+
+
+---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@ require_once 'function/post_var_defined.php';
 
 $res = "";
 
-if (isset($_POST) && is_array($_POST) && isset($_POST['type'])) 
+if (isset($_POST['type'])) 
 {
     if ($_POST['type'] == 'register')
     {
@@ -22,6 +22,7 @@ if (isset($_POST) && is_array($_POST) && isset($_POST['type']))
             }
             else
             {
+                $_POST['password'] = sha1($_POST['password']);
                 $user = new User($_POST);
                 $user->save();
                 $_SESSION['username'] = $_POST['username'];

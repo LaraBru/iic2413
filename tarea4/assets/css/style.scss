@@ -1,0 +1,71 @@
+$grey : #F3F3F3;
+$dk-grey : darken($grey, 30%);
+
+@mixin box-element {
+  padding: 20px 20px 20px;
+  background: white;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 0 3px $dk-grey;
+}
+@mixin box-title {
+  margin: -20px -20px 21px;
+  line-height: 40px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+  text-shadow: 0 1px white;
+  background: $grey;
+  border-bottom: 1px solid #cfcfcf;
+  border-radius: 10px 10px 0 0;
+}
+
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+body {
+    background: $grey;
+}
+.container {
+    margin-top: 30px;
+}
+input {
+    text-align: center;
+}
+.list-group {
+  margin-top: 20px;
+}
+.box {
+    @include box-element;
+    background: white; 
+    margin: auto;
+    margin-top: 30px;
+
+    th {
+      text-align: center;
+    }
+
+    ul.nav {
+      margin-top: 20px;
+    }
+
+    ul li {
+        width: 50%;
+
+        &.list-group-item {
+          margin: auto;
+        }
+
+        a {
+          outline: 0;
+        }
+    }
+
+    form {
+        input, textarea, select {
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+    }
+}

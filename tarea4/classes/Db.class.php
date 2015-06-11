@@ -1,5 +1,9 @@
 <?php 
 
+// 
+//      Class that deals with the SADEN part
+// 
+
 require_once 'User.class.php';
 
 class Db 
@@ -88,6 +92,10 @@ class Db
         }
     }
 
+    //////////////////////////////////////////
+    // USERS
+    //////////////////////////////////////////
+
     public function getUserWithUsername($username)
     {
         $stmt = $this->handle->prepare("SELECT * FROM person WHERE username=?");
@@ -100,11 +108,6 @@ class Db
         return null;
     }
 
-
-
-    //////////////////////////////////////////
-    // USERS
-    //////////////////////////////////////////
     public static function getUsers()
     {
         $stmt = Db::shared()->handle->prepare("SELECT * FROM person;");

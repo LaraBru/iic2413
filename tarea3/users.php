@@ -8,7 +8,7 @@ require_once 'classes/User.class.php';
 require_once 'function/post_var_defined.php';
 
 $res = "";
-
+var_dump($_POST);
 if (isset($_POST['type'])) 
 {
     if ($_POST['type'] == 'register')

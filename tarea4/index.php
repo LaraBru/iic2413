@@ -1,12 +1,27 @@
 <?php 
-
+// 
+//    scp -r ./ grupo16@bases.ing.puc.cl:/var/www/html/grupo16/entrega4
+// 
 session_start();
 
 require_once 'template/head.php' 
 
 ?>
 
-<h1 class="text-center">Welcome <?php if (isset($_SESSION['username'])) {echo '<strong>' . $_SESSION['username'] . '</strong>';} ?> on out web interface</h1>
+<h1 class="text-center">
+    Welcome 
+    <?php 
+        if (isset($_SESSION['network_username']))
+        {
+            echo '<strong>' . $_SESSION['network_username'] . '/' . $_SESSION['saden_username'] . '</strong> for network';
+        } 
+        else if (isset($_SESSION['saden_username']))
+        {
+            echo '<strong>' . $_SESSION['saden_username'] . '</strong>';
+        }
+    ?> 
+    on out web interface
+</h1>
 <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
         <div class="box">

@@ -301,6 +301,628 @@ class Db
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $row;
     }
+    
+    
+//////////////////////////////////////////////////////
+////////////////// LARA - Queries for tarea 4
+//////////////////////////////////////////////////////
+
+
+
+
+//////////////////GetTypes 
+
+
+    public static function getTypes()
+    {
+    	$stmt = Db::shared()->handle->prepare("SELECT * FROM type;");
+    	$stmt->execute();
+    	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+
+
+
+
+////////////////// Ciudad
+
+    public static function getEventsCity($id_city)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+	    		ON Type.id_type = Event.id_type
+	    		INNER JOIN Hurricane
+	    		ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+        		WHERE City.id_city = ? ;
+    	");
+    	$stmt->execute(array($id_city));
+    	$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+    
+    
+    
+     
+    ////////////////// Pais 
+    
+    public static function getEventsCountry($id_country)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE Country.id_country = ? ;
+    	");
+    	$stmt->execute(array($id_country));
+    	$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+    
+    
+    //////////////////Alertas activas
+    
+    public static function getAllActiveAlerts()
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE Alert.ending IS NULL ;
+    	");
+    	$stmt->execute();
+    	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+    
+    
+    
+    //////////////////Fecha (date of type ‘2015 Apr 27’)
+
+
+    public static function getEventsDate($date)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    	        SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE to_date(?, 'DD/MM/YYYY') BETWEEN Event.beginning AND Event.ending ;
+    	");
+    	$stmt->execute(array($date));
+    	$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+        
+    
+
+
+
+    //////////////////Tipo de desastre + Ciudad (String)
+    
+    public static function getEventsCityType($id_city,$id_type)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE City.id_city = ? 
+    		AND Type = ?;
+    	");
+    	$stmt->execute(array($id_city,$id_type));
+    	$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+
+
+
+
+    //////////////////Tipo de desastre + Pais 
+    
+    public static function getEventsCountryType($id_country,$id_type)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE Country.id_country = ? 
+    		AND Type = ?;
+    	");
+    	$stmt->execute(array($id_country,$id_type));
+	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+
+
+    //////////////////Tipo de desastre + Alertas activas
+    
+    public static function getAllActiveAlertsType($id_type)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE Alert.ending IS NULL 
+    		AND Type = ?;
+    	");
+    	$stmt->execute(array($id_type));
+    	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+    
+    
+
+    //////////////////Tipo de Desastro + Fecha 
+
+
+    public static function getEventsDateType($date,$id_type)
+    {
+    	$stmt = Db::shared()->handle->prepare("
+    		SELECT * FROM (
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, 'NA' AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    			WHERE Type.name = 'Volcano' OR Type.name = 'Flood'
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Hurricane.grade, '999') AS Intensity
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Hurricane
+    			ON Event.id_event = Hurricane.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT Type.name AS Type, City .name AS City, Country.name AS Country, Event.beginning AS Beginning, Event.ending AS ending, to_char(Earthquake.richter, '999D99') AS Intensity 
+    			FROM Type 
+    			INNER JOIN Event 
+    			ON Type.id_type = Event.id_type
+    			INNER JOIN Earthquake
+    			ON Earthquake.id_event = Event.id_event
+    			INNER JOIN Event_City 
+    			ON Event.id_event = Event_City.id_event
+    			INNER JOIN City
+    			ON Event_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country
+    			INNER JOIN Alert_Event
+    			ON Alert_Event.id_event = Event.id_event
+    			INNER JOIN Alert
+    			ON Alert_Event.id_alert = Alert.id_Alert
+    		UNION
+    			SELECT 'Alert' AS Type, City.name AS City, Country.name AS Country, Alert.beginning AS Beginning, Alert.ending AS ending, 'NA' AS Intensity
+    			FROM Alert 
+    			INNER JOIN Alert_City 
+    			ON Alert.id_alert = Alert_City.id_alert
+    			INNER JOIN City
+    			ON Alert_City.id_City = City.id_City
+    			INNER JOIN Country
+    			ON City.id_country = Country.id_country)
+    		WHERE to_date(?, 'DD/MM/YYYY') BETWEEN Event.beginning AND Event.ending 
+    		AND Type = ?;
+    	");
+    	$stmt->execute(array($date,$id_type));
+    	$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    	return $rows;
+    }
+    
+
+
 }
 
 ?>
